@@ -16,9 +16,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# Create all tables
-models.Base.metadata.create_all(bind=engine)
-
 # Include chat API routes
 

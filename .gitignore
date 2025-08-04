@@ -14,6 +14,6 @@ build/
 .DS_Store
 Thumbs.db
 
-
-
+backend/test.db
+backend/data/inventory_items.csv
 

@@ -9,8 +9,10 @@ const StartupInitializer = () => {
     const initialize = async () => {
       try {
         let user = JSON.parse(localStorage.getItem("chat_user"));
+        
         if (!user) {
-          const userRes = await fetch("http://localhost:8000/api/chat/users", {
+          // FIXED: Correct endpoint path with trailing slash
+          const userRes = await fetch("http://localhost:8000/api/chat/users/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -18,13 +20,19 @@ const StartupInitializer = () => {
               email: `guest_${Date.now()}@example.com`,
             }),
           });
+
+          if (!userRes.ok) {
+            throw new Error(`Failed to create user: ${userRes.status}`);
+          }
+          
           user = await userRes.json();
           localStorage.setItem("chat_user", JSON.stringify(user));
         }
 
         setUser(user);
 
-        const sessionRes = await fetch("http://localhost:8000/api/chat/sessions", {
+        // FIXED: Correct endpoint path with trailing slash
+        const sessionRes = await fetch("http://localhost:8000/api/chat/sessions/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -32,10 +40,16 @@ const StartupInitializer = () => {
           }),
         });
 
+        if (!sessionRes.ok) {
+          throw new Error(`Failed to create session: ${sessionRes.status}`);
+        }
+
         const sessionData = await sessionRes.json();
         setSessionId(sessionData.id);
-
-        fetchSessions();
+        
+        // Fetch sessions after creating one
+        await fetchSessions();
+        
       } catch (err) {
         console.error("Initialization failed:", err);
       }
