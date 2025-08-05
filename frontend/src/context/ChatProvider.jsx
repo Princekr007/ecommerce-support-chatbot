@@ -13,7 +13,7 @@ export const ChatProvider = ({ children }) => {
   // FIXED: Added missing closing brace
   const fetchSessions = async (userId = null) => {
     try {
-      let url = "http://localhost:8000/api/chat/sessions/";
+      let url = "/api/chat/sessions/";
       if (userId) {
         url += `?user_id=${userId}`;
       } // ← THIS BRACE WAS MISSING IN YOUR CODE!
@@ -51,7 +51,7 @@ export const ChatProvider = ({ children }) => {
     setMessages(prev => [...prev, tempUserMessage]);
 
     try {
-      const response = await fetch("http://localhost:8000/api/chat/", {
+      const response = await fetch("/api/chat/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -111,7 +111,7 @@ export const ChatProvider = ({ children }) => {
     
     try {
       console.log("Fetching messages for session:", sessionId);
-      const res = await fetch(`http://localhost:8000/api/chat/sessions/${sessionId}/messages`);
+      const res = await fetch(`/api/chat/sessions/${sessionId}/messages`);
       
       if (res.ok) {
         const data = await res.json();

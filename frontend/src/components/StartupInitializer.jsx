@@ -12,7 +12,7 @@ const StartupInitializer = () => {
         
         if (!user) {
           // FIXED: Correct endpoint path with trailing slash
-          const userRes = await fetch("http://localhost:8000/api/chat/users/", {
+          const userRes = await fetch("/api/chat/users/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -32,7 +32,7 @@ const StartupInitializer = () => {
         setUser(user);
 
         // FIXED: Correct endpoint path with trailing slash
-        const sessionRes = await fetch("http://localhost:8000/api/chat/sessions/", {
+        const sessionRes = await fetch("/api/chat/sessions/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

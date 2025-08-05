@@ -21,7 +21,7 @@ const SessionManager = ({ user, onSessionSelected, onLogout }) => {
   const createNewSession = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/chat/sessions/", {
+      const response = await fetch("/api/chat/sessions/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
