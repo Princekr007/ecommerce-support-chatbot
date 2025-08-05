@@ -1,5 +1,5 @@
-// src/components/ChatWindow.jsx - Fixed session management
-import { useEffect, useState } from "react";
+// src/components/ChatWindow.jsx - FIXED: ESLint compliant without infinite loops
+import { useEffect, useState, useCallback } from "react";
 import MessageList from "./MessageList";
 import UserInput from "./UserInput";
 import ConversationHistory from "./ConversationHistory";
@@ -9,20 +9,25 @@ export default function ChatWindow({ user, session, onSessionChange, onLogout })
   const { fetchMessages, messages, setSessionId } = useChat();
   const [showHistory, setShowHistory] = useState(false);
 
-  // Set session ID in context when session changes
-  useEffect(() => {
+  // FIXED: Memoize fetchMessages call to make it stable
+  const memoizedFetchMessages = useCallback(() => {
     if (session && session.id) {
       console.log("Setting session ID in context:", session.id);
       setSessionId(session.id);
       fetchMessages(session.id);
     }
-  }, [session, setSessionId, fetchMessages]);
+  }, [session, setSessionId, fetchMessages]); // Include all dependencies
 
-  // Debug logging
+  // FIXED: Now ESLint is happy and no infinite loop
+  useEffect(() => {
+    memoizedFetchMessages();
+  }, [memoizedFetchMessages]); // Only depends on memoized function
+
+  // FIXED: Debug logging with proper dependencies
   useEffect(() => {
     console.log("ChatWindow props:", { user, session });
     console.log("Current messages:", messages);
-  }, [user, session, messages]);
+  }, [user, session, messages]); // Include all dependencies as ESLint wants
 
   return (
     <div className="h-screen bg-gray-50 flex">

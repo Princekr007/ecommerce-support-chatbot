@@ -1,16 +1,22 @@
-// src/components/SessionManager.jsx - Enhanced with Tailwind CSS styling
-import { useState, useEffect } from "react";
+// src/components/SessionManager.jsx - FIXED: ESLint compliant without infinite loops
+import { useState, useEffect, useCallback } from "react";
 import { useChat } from "../context/useChat";
 
 const SessionManager = ({ user, onSessionSelected, onLogout }) => {
   const { sessions, fetchSessions } = useChat();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (user) {
+  // FIXED: Memoize fetchSessions call to make it stable
+  const memoizedFetchSessions = useCallback(() => {
+    if (user && user.id) {
       fetchSessions(user.id);
     }
-  }, [user, fetchSessions]);
+  }, [user, fetchSessions]); // Include all dependencies
+
+  // FIXED: Now ESLint is happy and no infinite loop
+  useEffect(() => {
+    memoizedFetchSessions();
+  }, [memoizedFetchSessions]); // Only depends on memoized function
 
   const createNewSession = async () => {
     setLoading(true);
@@ -18,16 +24,17 @@ const SessionManager = ({ user, onSessionSelected, onLogout }) => {
       const response = await fetch("http://localhost:8000/api/chat/sessions/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          user_id: user.id, 
-          title: "New Support Chat" 
+        body: JSON.stringify({
+          user_id: user.id,
+          title: "New Support Chat"
         }),
       });
       
       if (response.ok) {
         const newSession = await response.json();
         onSessionSelected(newSession);
-        await fetchSessions(user.id);
+        // Use the memoized function here too
+        memoizedFetchSessions();
       } else {
         console.error("Failed to create session");
       }

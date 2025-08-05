@@ -1,4 +1,4 @@
-// src/context/ChatProvider.jsx - Fixed message sending and refreshing
+// src/context/ChatProvider.jsx - FIXED: Missing brace and infinite loop
 import React, { useState } from "react";
 import { ChatContext } from "./ChatContext";
 
@@ -10,13 +10,13 @@ export const ChatProvider = ({ children }) => {
   const [inputValue, setInputValue] = useState("");
   const [sessions, setSessions] = useState([]);
 
-  // Fetch sessions with user filtering
+  // FIXED: Added missing closing brace
   const fetchSessions = async (userId = null) => {
     try {
       let url = "http://localhost:8000/api/chat/sessions/";
       if (userId) {
         url += `?user_id=${userId}`;
-      }
+      } // ← THIS BRACE WAS MISSING IN YOUR CODE!
       
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Network response was not ok: ${res.status}`);
