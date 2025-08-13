@@ -7,20 +7,37 @@ export default function UserInput({ sessionId, user }) {
   const { sendMessage, loading } = useChat();
 
   const handleSend = async () => {
-    if (!input.trim() || loading || !sessionId || !user) return;
-    
-    const messageContent = input.trim();
-    setInput(""); // Clear input immediately
-    
-    try {
-      // Call sendMessage which handles both sending and refreshing
-      await sendMessage(messageContent);
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      // Re-add the message to input if sending failed
-      setInput(messageContent);
-    }
-  };
+  console.log("🔄 handleSend called with:", { 
+    input: input.trim(), 
+    sessionId, 
+    user: user?.id, 
+    loading,
+    sendMessage: typeof sendMessage 
+  });
+
+  if (!input.trim() || loading || !sessionId || !user) {
+    console.log("❌ Send blocked:", { 
+      hasInput: !!input.trim(), 
+      loading, 
+      hasSessionId: !!sessionId, 
+      hasUser: !!user 
+    });
+    return;
+  }
+  
+  const messageContent = input.trim();
+  setInput("");
+
+  try {
+    console.log("📤 Calling sendMessage...");
+    await sendMessage(messageContent);
+    console.log("✅ sendMessage completed");
+  } catch (error) {
+    console.error("❌ Failed to send message:", error);
+    setInput(messageContent);
+  }
+};
+
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

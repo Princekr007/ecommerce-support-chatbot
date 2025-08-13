@@ -1,19 +1,18 @@
-# Fixed crud.py - Use model_dump() and handle title field
-
+# app/crud.py
 from sqlalchemy.orm import Session
 from . import models, schemas
 
-# --- User CRUD ---
+# User CRUD
 def create_user(db: Session, user: schemas.UserCreate):
-    # Split name into first_name, use email for last_name if no space
-    name_parts = user.name.split(' ', 1)
+    # Split name into first/last
+    name_parts = user.name.split(" ", 1)
     first_name = name_parts[0]
     last_name = name_parts[1] if len(name_parts) > 1 else ""
-    
+
     db_user = models.User(
         first_name=first_name,
         last_name=last_name,
-        email=user.email
+        email=user.email,
     )
     db.add(db_user)
     db.commit()
@@ -26,11 +25,11 @@ def get_user(db: Session, user_id: int):
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
-# --- Session CRUD ---
+# Session CRUD
 def create_chat_session(db: Session, session: schemas.ChatSessionCreate):
     db_session = models.ChatSession(
         user_id=session.user_id,
-        title=session.title or "New Chat"  # FIXED: Handle title field
+        title=session.title or "New Chat",
     )
     db.add(db_session)
     db.commit()
@@ -43,14 +42,14 @@ def get_chat_session(db: Session, session_id: int):
 def get_all_chat_sessions(db: Session):
     return db.query(models.ChatSession).order_by(models.ChatSession.created_at.desc()).all()
 
-# --- Message CRUD ---
+# Message CRUD
 def add_message(db: Session, message: schemas.MessageCreate):
-    # FIXED: Use model_dump() for Pydantic v2 compatibility
+    # Pydantic v2
     try:
-        message_data = message.model_dump()  # Pydantic v2
+        message_data = message.model_dump()
     except AttributeError:
-        message_data = message.dict()  # Pydantic v1 fallback
-    
+        message_data = message.dict()
+
     db_msg = models.Message(**message_data)
     db.add(db_msg)
     db.commit()

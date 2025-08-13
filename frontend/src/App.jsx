@@ -1,9 +1,23 @@
-// src/App.jsx - Updated with proper flow and Tailwind styling
 import { useState, useEffect } from "react";
 import { ChatProvider } from "./context/ChatProvider";
 import UserLogin from "./components/UserLogin";
 import SessionManager from "./components/SessionManager";
 import ChatWindow from "./components/ChatWindow";
+import { useChat } from "./context/useChat";
+
+// Component to sync user between App and ChatProvider
+function UserSyncComponent({ currentUser }) {
+  const { setUser } = useChat();
+  
+  useEffect(() => {
+    if (currentUser) {
+      console.log("🔄 Syncing user to ChatProvider:", currentUser);
+      setUser(currentUser);
+    }
+  }, [currentUser, setUser]);
+  
+  return null;
+}
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -14,7 +28,9 @@ function App() {
     const savedUser = localStorage.getItem("chat_user");
     if (savedUser) {
       try {
-        setCurrentUser(JSON.parse(savedUser));
+        const parsedUser = JSON.parse(savedUser);
+        console.log("🔄 Loading user from App localStorage:", parsedUser);
+        setCurrentUser(parsedUser);
       } catch (error) {
         console.error("Error parsing saved user:", error);
         localStorage.removeItem("chat_user");
@@ -23,6 +39,7 @@ function App() {
   }, []);
 
   const handleUserSelected = (user) => {
+    console.log("👤 User selected in App:", user);
     setCurrentUser(user);
     setCurrentSession(null);
     localStorage.setItem("chat_user", JSON.stringify(user));
@@ -40,21 +57,22 @@ function App() {
 
   return (
     <ChatProvider>
-      <div className="font-sans antialiased">
+      <UserSyncComponent currentUser={currentUser} />
+      <div className="min-h-screen bg-gray-50">
         {!currentUser ? (
           <UserLogin onUserSelected={handleUserSelected} />
         ) : !currentSession ? (
-          <SessionManager 
-            user={currentUser} 
-            onSessionSelected={handleSessionSelected} 
-            onLogout={handleLogout} 
+          <SessionManager
+            user={currentUser}
+            onSessionSelected={handleSessionSelected}
+            onLogout={handleLogout}
           />
         ) : (
-          <ChatWindow 
-            user={currentUser} 
-            session={currentSession} 
-            onSessionChange={setCurrentSession} 
-            onLogout={handleLogout} 
+          <ChatWindow
+            user={currentUser}
+            session={currentSession}
+            onSessionChange={handleSessionSelected}
+            onLogout={handleLogout}
           />
         )}
       </div>

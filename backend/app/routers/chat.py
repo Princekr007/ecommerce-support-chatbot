@@ -1,22 +1,18 @@
-# Enhanced chat.py with correct field names and better error handling
-
+# app/routers/chat.py
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models, schemas, crud
-from datetime import datetime
 from app.utils.llm import generate_ai_response
 from typing import List, Optional
 import logging
 
-# Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# REMOVE the /chat prefix since main.py already adds /api/chat
 router = APIRouter(tags=["Chat"])
 
-# --- USERS ---
+# USERS
 @router.post("/users/", response_model=schemas.UserOut)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     logger.info(f"Creating user: {user.email}")
@@ -38,7 +34,7 @@ def get_user_by_email(email: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-# --- CHAT SESSIONS ---
+# CHAT SESSIONS
 @router.post("/sessions/", response_model=schemas.ChatSessionOut)
 def create_session(session: schemas.ChatSessionCreate, db: Session = Depends(get_db)):
     logger.info(f"Creating session for user: {session.user_id} with title: {session.title}")
@@ -55,16 +51,15 @@ def read_session(session_id: int, db: Session = Depends(get_db)):
 @router.get("/sessions/", response_model=List[schemas.ChatSessionOut])
 def list_chat_sessions(
     user_id: Optional[int] = Query(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     logger.info(f"Listing sessions for user: {user_id}")
     query = db.query(models.ChatSession)
     if user_id is not None:
         query = query.filter(models.ChatSession.user_id == user_id)
-    # FIXED: Use correct field name 'created_at'
     return query.order_by(models.ChatSession.created_at.desc()).all()
 
-# --- MESSAGES ---
+# MESSAGES
 @router.post("/messages/", response_model=schemas.MessageOut)
 def post_message(message: schemas.MessageCreate, db: Session = Depends(get_db)):
     logger.info(f"Creating message for session: {message.session_id}")
@@ -77,18 +72,20 @@ def get_messages(session_id: int, db: Session = Depends(get_db)):
     logger.info(f"Found {len(messages)} messages")
     return messages
 
-# --- CHAT INTERACTION ENDPOINT ---
+# CHAT INTERACTION ENDPOINT
 @router.post("/", response_model=schemas.ChatResponse)
 def chat(request: schemas.ChatRequest, db: Session = Depends(get_db)):
-    logger.info(f"Chat request: user_id={request.user_id}, session_id={request.session_id}, message='{request.message[:50]}...'")
-    
+    logger.info(
+        f"Chat request: user_id={request.user_id}, session_id={request.session_id}, "
+        f"message='{request.message[:50]}...'"
+    )
     try:
         # Validate user
         user = crud.get_user(db, request.user_id)
         if not user:
             logger.error(f"User not found: {request.user_id}")
             raise HTTPException(status_code=404, detail="User not found")
-        
+
         # Get or create session
         if request.session_id:
             session = crud.get_chat_session(db, request.session_id)
@@ -98,44 +95,47 @@ def chat(request: schemas.ChatRequest, db: Session = Depends(get_db)):
         else:
             logger.info("Creating new session")
             session = crud.create_chat_session(
-                db, schemas.ChatSessionCreate(user_id=request.user_id, title="New Support Chat")
+                db,
+                schemas.ChatSessionCreate(user_id=request.user_id, title="New Support Chat"),
             )
-        
+
         logger.info(f"Using session: {session.id}")
-        
+
         # Store user message
         user_message = crud.add_message(
             db,
             schemas.MessageCreate(
                 session_id=session.id,
                 sender="user",
-                content=request.message
-            )
+                content=request.message,
+            ),
         )
         logger.info(f"Stored user message: {user_message.id}")
-        
+
         # Generate AI reply
         try:
             ai_reply = generate_ai_response(request.message)
             logger.info(f"Generated AI reply: '{ai_reply[:50]}...'")
         except Exception as e:
             logger.error(f"Failed to generate AI response: {str(e)}")
-            ai_reply = "I'm sorry, I'm having trouble processing your request right now. Please try again later."
-        
+            ai_reply = (
+                "I'm sorry, I'm having trouble processing your request right now. Please try again later."
+            )
+
         # Store AI message
         ai_message = crud.add_message(
             db,
             schemas.MessageCreate(
                 session_id=session.id,
                 sender="ai",
-                content=ai_reply
-            )
+                content=ai_reply,
+            ),
         )
         logger.info(f"Stored AI message: {ai_message.id}")
-        
+
         logger.info(f"Chat completed successfully for session: {session.id}")
         return schemas.ChatResponse(session_id=session.id, message=ai_reply)
-        
+
     except HTTPException:
         raise
     except Exception as e:
