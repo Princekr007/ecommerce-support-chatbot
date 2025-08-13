@@ -1,103 +1,139 @@
 # Ecommerce Support Chatbot
 
-This repository contains an AI-powered support chatbot designed to assist users with common queries related to e-commerce platforms. The chatbot leverages natural language processing to understand user questions and provide real-time, relevant support, improving customer satisfaction and reducing response time.
+An intelligent support chatbot for ecommerce platforms, built with JavaScript, Python, and Docker. This project aims to streamline customer support by providing instant, automated responses to common queries, order tracking, product recommendations, and more.
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Customization](#customization)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 ## Features
 
-- **AI-Powered Responses:** Utilizes machine learning and NLP to interpret and respond to customer inquiries.
-- **Multi-Channel Support:** Can be integrated into web platforms and potentially other channels.
-- **Pre-trained and Customizable:** Comes with a set of pre-trained intents and can be customized for specific e-commerce needs.
-- **Order Tracking:** Users can ask about order status, shipping updates, and delivery estimates.
-- **Product Inquiries:** Handles questions about product availability, pricing, and specifications.
-- **Returns & Refunds:** Guides users through the return and refund process.
-- **Escalation:** Can escalate complex issues to human agents when necessary.
+- Automated customer query handling
+- Order status lookup
+- Product recommendations
+- Multi-language support (extendable)
+- Easy integration with ecommerce platforms
+- Scalable, containerized deployment
+- Customizable responses and workflows
 
 ## Tech Stack
 
-- **Backend:** Python
-- **Frontend:** JavaScript, HTML, CSS
-- **Frameworks/Libraries:**
-  - Flask or Django (for API)
-  - React or vanilla JavaScript (for UI)
-  - NLP Libraries (e.g., spaCy, NLTK, or transformers)
+- **Frontend:** JavaScript (React, Vite)
+- **Backend:** Python (Flask/FastAPI, customizable)
+- **Containerization:** Docker
+- **Other:** Node.js, ESLint, Plugins
 
-## Getting Started
-
-### Prerequisites
-
-- Python 3.8+
-- Node.js 14+
-- npm or yarn
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Princekr007/ecommerce-support-chatbot.git
-   cd ecommerce-support-chatbot
-   ```
-
-2. **Backend Setup:**
-   ```bash
-   cd backend
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   pip install -r requirements.txt
-   ```
-
-3. **Frontend Setup:**
-   ```bash
-   cd ../frontend
-   npm install
-   ```
-
-### Running the Application
-
-1. **Start the backend server:**
-   ```bash
-   cd backend
-   python app.py
-   ```
-
-2. **Start the frontend development server:**
-   ```bash
-   cd frontend
-   npm start
-   ```
-
-3. **Access the app:**  
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
+Language composition:
+- JavaScript: 65.8%
+- Python: 31%
+- Dockerfile: 1.6%
+- Other: 1.6%
 
 ## Project Structure
 
 ```
-ecommerce-support-chatbot/
-│
-├── backend/         # Python API and chatbot logic
-│   ├── app.py
-│   └── ...
-├── frontend/        # JavaScript UI code
-│   ├── src/
-│   └── ...
-├── requirements.txt
-├── package.json
-└── README.md
+├── frontend/        # React + Vite frontend
+│   └── README.md    # Frontend setup instructions
+├── backend/         # Python backend (Flask/FastAPI)
+├── docker/          # Docker-related files
+├── .env.example     # Example environment variables
+├── package.json     # Frontend dependencies
+├── requirements.txt # Backend dependencies
+├── Dockerfile       # Main Dockerfile
+├── README.md        # This file
+└── ...
 ```
+
+## Installation
+
+### Prerequisites
+
+- Node.js & npm
+- Python 3.8+
+- Docker (optional, for containerized deployment)
+
+### Setup
+
+#### 1. Clone the repository
+
+```bash
+git clone https://github.com/Princekr007/ecommerce-support-chatbot.git
+cd ecommerce-support-chatbot
+```
+
+#### 2. Install frontend dependencies
+
+```bash
+cd frontend
+npm install
+```
+
+#### 3. Install backend dependencies
+
+```bash
+cd ../backend
+pip install -r requirements.txt
+```
+
+#### 4. Configure environment variables
+
+Copy `.env.example` to `.env` and fill in required values.
+
+#### 5. Run with Docker (recommended)
+
+```bash
+docker-compose up --build
+```
+
+#### 6. Manual Run (development)
+
+- Start backend:  
+  ```bash
+  python app.py
+  ```
+- Start frontend:  
+  ```bash
+  cd frontend
+  npm run dev
+  ```
+
+## Usage
+
+- Access the chatbot via the web interface (default: `http://localhost:3000`)
+- Integrate with your ecommerce platform via API (see backend docs)
+- Customize responses and workflows in backend scripts
 
 ## Customization
 
-- **Training Data:** Update intents and responses in the backend to improve chatbot accuracy.
-- **UI:** Modify frontend components to match your brand's look and feel.
-- **Integrations:** Connect to your order management or product databases for dynamic responses.
+- **Frontend:** Modify React components in `frontend/`
+- **Backend:** Update Python modules in `backend/` for new business logic or integrations
+- **Docker:** Adjust Dockerfile and `docker-compose.yml` as needed
+- **Environment Variables:** Use `.env` for secrets and configuration
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/my-feature`
+3. Commit your changes: `git commit -am 'Add new feature'`
+4. Push to the branch: `git push origin feature/my-feature`
+5. Open a pull request
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ## Contact
 
-For questions or support, open an issue or contact [Princekr007](https://github.com/Princekr007).
+Maintainer: [Princekr007](https://github.com/Princekr007)
+
+For questions, issues, or feature requests, please open an issue or contact via GitHub.
