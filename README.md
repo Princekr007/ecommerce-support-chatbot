@@ -38,10 +38,6 @@ An intelligent AI-powered support chatbot for e-commerce platforms, built with R
 - **Database:** SQLite with CSV data import
 - **Environment:** Production-ready with environment variables
 
-## 🏃‍♂️ Quick Start
-
-[Keep your existing installation instructions here]
-
 ## 📞 Contact
 
 Built by [Prince Kumar] - [princekr7331@gmail.com]
@@ -50,9 +46,6 @@ Built by [Prince Kumar] - [princekr7331@gmail.com]
 
 ---
 
-# Ecommerce Support Chatbot
-
-An intelligent support chatbot for ecommerce platforms, built with JavaScript, Python, and Docker. This project aims to streamline customer support by providing instant, automated responses to common queries.
 
 ## Table of Contents
 
