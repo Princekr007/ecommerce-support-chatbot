@@ -1,6 +1,58 @@
+# E-commerce Support Chatbot
+
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_App-brightgreen?style=for-the-badge)](https://my-chatbot-frontend-pshg.onrender.com/)
+
+An intelligent AI-powered support chatbot for e-commerce platforms, built with React, FastAPI, and Docker.
+
+## 🌐 Live Demo
+
+**Try it now:** [https://my-chatbot-frontend-pshg.onrender.com/](https://my-chatbot-frontend-pshg.onrender.com/)
+
+### How to Use
+1. Login with your email or user ID
+2. Start a new chat session
+3. Ask questions about orders, products, or account info
+4. Get instant AI-powered responses
+
+## ✨ Features
+
+- 🤖 AI-powered customer support using GROQ API
+- 👤 User authentication with email/ID login
+- 💬 Real-time chat with session management
+- 📊 Order status lookup and product recommendations
+- 🔄 Conversation history and multi-session support
+- 📱 Responsive design with Tailwind CSS
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React 18 + Vite + Tailwind CSS
+- **Backend:** FastAPI + SQLAlchemy + SQLite
+- **AI:** GROQ API for intelligent responses  
+- **Deployment:** Render.com (Frontend + Backend)
+- **Containerization:** Docker + Docker Compose
+
+## 🚀 Deployment
+
+- **Frontend:** Deployed on Render as Static Site
+- **Backend:** Deployed on Render as Web Service
+- **Database:** SQLite with CSV data import
+- **Environment:** Production-ready with environment variables
+
+## 🏃‍♂️ Quick Start
+
+[Keep your existing installation instructions here]
+
+## 📞 Contact
+
+Built by [Prince Kumar] - [princekr7331@gmail.com]
+
+⭐ Star this repo if you found it helpful!
+
+---
+
 # Ecommerce Support Chatbot
 
-An intelligent support chatbot for ecommerce platforms, built with JavaScript, Python, and Docker. This project aims to streamline customer support by providing instant, automated responses to common queries, order tracking, product recommendations, and more.
+An intelligent support chatbot for ecommerce platforms, built with JavaScript, Python, and Docker. This project aims to streamline customer support by providing instant, automated responses to common queries.
 
 ## Table of Contents
 
