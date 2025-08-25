@@ -1,8 +1,12 @@
+// src/components/StartupInitializer.jsx - Updated with environment variables
 import { useEffect } from "react";
 import { useChat } from "../context/useChat";
 
 const StartupInitializer = () => {
   const { setUser, setSessionId, fetchSessions } = useChat();
+  
+  // Get API base URL from environment
+  const API_BASE = import.meta.env.VITE_API_BASE || '';
 
   useEffect(() => {
     const initialize = async () => {
@@ -10,7 +14,7 @@ const StartupInitializer = () => {
         let user = JSON.parse(localStorage.getItem("chat_user"));
 
         if (!user) {
-          const userRes = await fetch("/api/chat/users/", {
+          const userRes = await fetch(`${API_BASE}/api/chat/users/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -25,7 +29,7 @@ const StartupInitializer = () => {
 
         setUser(user);
 
-        const sessionRes = await fetch("/api/chat/sessions/", {
+        const sessionRes = await fetch(`${API_BASE}/api/chat/sessions/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_id: user.id }),
@@ -41,7 +45,7 @@ const StartupInitializer = () => {
     };
 
     initialize();
-  }, [setUser, setSessionId, fetchSessions]);
+  }, [setUser, setSessionId, fetchSessions, API_BASE]);
 
   return null;
 };

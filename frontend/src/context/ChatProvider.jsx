@@ -9,6 +9,8 @@ export const ChatProvider = ({ children }) => {
   const [inputValue, setInputValue] = useState("");
   const [sessions, setSessions] = useState([]);
 
+    const API_BASE = import.meta.env.VITE_API_BASE || '';
+
   // Initialize user from localStorage on provider mount
   React.useEffect(() => {
     const savedUser = localStorage.getItem("chat_user");
@@ -26,7 +28,7 @@ export const ChatProvider = ({ children }) => {
 
   const fetchSessions = useCallback(async (userId = null) => {
     try {
-      let url = "/api/chat/sessions/";
+      let url = `${API_BASE}/api/chat/sessions/`;
       if (userId) {
         url += `?user_id=${userId}`;
       }
@@ -38,13 +40,13 @@ export const ChatProvider = ({ children }) => {
       console.error("Failed to fetch sessions:", error);
       setSessions([]);
     }
-  }, []);
+  }, [API_BASE]);
 
   const fetchMessages = useCallback(async (sid) => {
     if (!sid) return;
     try {
       console.log("Fetching messages for session:", sid);
-      const res = await fetch(`/api/chat/sessions/${sid}/messages`);
+      const res = await fetch(`${API_BASE}/api/chat/sessions/${sid}/messages`);
       if (res.ok) {
         const data = await res.json();
         console.log("Fetched messages:", data);
@@ -55,7 +57,7 @@ export const ChatProvider = ({ children }) => {
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
-  }, []);
+  }, [API_BASE]);
 
   const sendMessage = useCallback(async (messageContent) => {
     console.log("📤 Calling sendMessage...", { user, sessionId, messageContent });
@@ -88,7 +90,7 @@ export const ChatProvider = ({ children }) => {
     setMessages((prev) => [...prev, tempUserMessage]);
 
     try {
-      const response = await fetch("/api/chat/", {
+      const response = await fetch(`${API_BASE}/api/chat/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -135,7 +137,7 @@ export const ChatProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [user, sessionId, fetchMessages]);
+  }, [user, sessionId, fetchMessages, API_BASE]);
 
   // Add function to sync user from App component
   const updateUser = useCallback((newUser) => {

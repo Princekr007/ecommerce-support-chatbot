@@ -8,6 +8,8 @@ const UserLogin = ({ onUserSelected }) => {
   const [userNotFound, setUserNotFound] = useState(false);
   const [creating, setCreating] = useState(false);
 
+  const API_BASE = import.meta.env.VITE_API_BASE || '';
+
   // Detect if input is email or user ID
   const detectInputType = (value) => {
     if (value.includes("@")) {
@@ -35,9 +37,9 @@ const UserLogin = ({ onUserSelected }) => {
       let response;
       
       if (inputType === "email") {
-        response = await fetch(`/api/chat/users/by-email/${encodeURIComponent(input.trim())}`);
+        response = await fetch(`${API_BASE}/api/chat/users/by-email/${encodeURIComponent(input.trim())}`);
       } else if (inputType === "user_id") {
-        response = await fetch(`/api/chat/users/${input.trim()}`);
+        response = await fetch(`${API_BASE}/api/chat/users/${input.trim()}`);
       } else {
         setError("Please enter a valid email address or numeric user ID");
         setLoading(false);
@@ -73,7 +75,7 @@ const UserLogin = ({ onUserSelected }) => {
     setCreating(true);
     
     try {
-      const res = await fetch("/api/chat/users/", {
+      const res = await fetch(`${API_BASE}/api/chat/users/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

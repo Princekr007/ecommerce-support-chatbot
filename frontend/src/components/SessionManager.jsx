@@ -1,4 +1,4 @@
-// src/components/SessionManager.jsx - FIXED: ESLint compliant without infinite loops
+// src/components/SessionManager.jsx - Updated with environment variables
 import { useState, useEffect, useCallback } from "react";
 import { useChat } from "../context/useChat";
 
@@ -6,22 +6,23 @@ const SessionManager = ({ user, onSessionSelected, onLogout }) => {
   const { sessions, fetchSessions } = useChat();
   const [loading, setLoading] = useState(false);
 
-  // FIXED: Memoize fetchSessions call to make it stable
+  // Get API base URL from environment
+  const API_BASE = import.meta.env.VITE_API_BASE || '';
+
   const memoizedFetchSessions = useCallback(() => {
     if (user && user.id) {
       fetchSessions(user.id);
     }
-  }, [user, fetchSessions]); // Include all dependencies
+  }, [user, fetchSessions]);
 
-  // FIXED: Now ESLint is happy and no infinite loop
   useEffect(() => {
     memoizedFetchSessions();
-  }, [memoizedFetchSessions]); // Only depends on memoized function
+  }, [memoizedFetchSessions]);
 
   const createNewSession = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/chat/sessions/", {
+      const response = await fetch(`${API_BASE}/api/chat/sessions/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -29,11 +30,10 @@ const SessionManager = ({ user, onSessionSelected, onLogout }) => {
           title: "New Support Chat"
         }),
       });
-      
+
       if (response.ok) {
         const newSession = await response.json();
         onSessionSelected(newSession);
-        // Use the memoized function here too
         memoizedFetchSessions();
       } else {
         console.error("Failed to create session");
