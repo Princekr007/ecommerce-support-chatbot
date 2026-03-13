@@ -12,11 +12,6 @@ pool:
 
 steps:
 
-# Install Docker
-- task: DockerInstaller@0
-  inputs:
-    dockerVersion: 'latest'
-
 # Login to Azure Container Registry
 - script: |
     az acr login --name $(acrName)
