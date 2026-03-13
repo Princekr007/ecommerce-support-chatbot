@@ -1,38 +1,42 @@
 trigger:
 - main
 
-variables:
-  acrName: princechatbotregistry
-  backendImage: backend
-  frontendImage: frontend
-  tag: $(Build.BuildId)
-
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  acrName: princechatbotregistry
+  imageTag: latest
+
 steps:
 
-# Login to Azure Container Registry
-- script: |
-    az acr login --name $(acrName)
-  displayName: Login to ACR
+- checkout: self
+
+# Login to Azure
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'azure-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az acr login --name $(acrName)
 
 # Build Backend Image
 - script: |
-    docker build -t $(acrName).azurecr.io/$(backendImage):$(tag) ./backend
+    docker build -t $(acrName).azurecr.io/backend:$(imageTag) ./backend
   displayName: Build Backend Image
 
 # Push Backend Image
 - script: |
-    docker push $(acrName).azurecr.io/$(backendImage):$(tag)
+    docker push $(acrName).azurecr.io/backend:$(imageTag)
   displayName: Push Backend Image
 
 # Build Frontend Image
 - script: |
-    docker build -t $(acrName).azurecr.io/$(frontendImage):$(tag) ./frontend
+    docker build -t $(acrName).azurecr.io/frontend:$(imageTag) ./frontend
   displayName: Build Frontend Image
 
 # Push Frontend Image
 - script: |
-    docker push $(acrName).azurecr.io/$(frontendImage):$(tag)
+    docker push $(acrName).azurecr.io/frontend:$(imageTag)
   displayName: Push Frontend Image
