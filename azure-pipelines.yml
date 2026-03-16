@@ -7,6 +7,8 @@ pool:
 variables:
   acrName: princechatbotregistry
   imageTag: latest
+  backendImage: $(acrName).azurecr.io/backend:$(imageTag)
+  frontendImage: $(acrName).azurecr.io/frontend:$(imageTag)
 
 steps:
 
@@ -23,20 +25,46 @@ steps:
 
 # Build Backend Image
 - script: |
-    docker build -t $(acrName).azurecr.io/backend:$(imageTag) ./backend
+    docker build -t $(backendImage) ./backend
   displayName: Build Backend Image
 
 # Push Backend Image
 - script: |
-    docker push $(acrName).azurecr.io/backend:$(imageTag)
+    docker push $(backendImage)
   displayName: Push Backend Image
 
 # Build Frontend Image
 - script: |
-    docker build -t $(acrName).azurecr.io/frontend:$(imageTag) ./frontend
+    docker build -t $(frontendImage) ./frontend
   displayName: Build Frontend Image
 
 # Push Frontend Image
 - script: |
-    docker push $(acrName).azurecr.io/frontend:$(imageTag)
+    docker push $(frontendImage)
   displayName: Push Frontend Image
+
+# Deploy Backend
+- task: AzureCLI@2
+  displayName: Deploy Backend
+  inputs:
+    azureSubscription: 'azure-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az webapp config container set \
+        --name prince-chatbot-backend \
+        --resource-group ecommerce-chatbot-rg \
+        --container-image-name $(backendImage)
+
+# Deploy Frontend
+- task: AzureCLI@2
+  displayName: Deploy Frontend
+  inputs:
+    azureSubscription: 'azure-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az webapp config container set \
+        --name prince-chatbot-app \
+        --resource-group ecommerce-chatbot-rg \
+        --container-image-name $(frontendImage)
